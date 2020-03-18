@@ -1,4 +1,5 @@
 const express = require('express');
+
 const router = express.Router();
 
 const db = require('../database');
@@ -8,7 +9,7 @@ router.get('/add', (req, res) => {
 });
 
 router.post('/add', async (req, res) => {
-    const { title, url, description } = req.body;
+    const { title, url, description } = req.body; 
 
     const newlink = {
         title,
@@ -17,7 +18,14 @@ router.post('/add', async (req, res) => {
     };
 
     await db.query('INSERT INTO links set ?', [newlink]);
-    res.send('recibido');
+    res.redirect('/links');
+});
+
+router.get('/', async (req, res) => {
+
+    await db.query('SELECT * FROM links');
+    res.render('links/list', {links});
+
 });
 
 
