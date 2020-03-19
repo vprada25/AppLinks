@@ -9,7 +9,7 @@ router.get('/add', (req, res) => {
 });
 
 router.post('/add', async (req, res) => {
-    const { title, url, description } = req.body; 
+    const { title, url, description } = req.body;
 
     const newlink = {
         title,
@@ -18,14 +18,12 @@ router.post('/add', async (req, res) => {
     };
 
     await db.query('INSERT INTO links set ?', [newlink]);
-    res.redirect('/links');
+    res.send('recibido');
 });
 
 router.get('/', async (req, res) => {
-
-    await db.query('SELECT * FROM links');
-    res.render('links/list', {links});
-
+    const links = await db.query('SELECT * FROM links');
+    res.render('links/list', { links });
 });
 
 
