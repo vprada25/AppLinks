@@ -18,7 +18,7 @@ router.post('/add', async (req, res) => {
     };
 
     await db.query('INSERT INTO links set ?', [newlink]);
-    res.flash('success','agregado correctamente');
+    req.flash('success','agregado correctamente');
     res.redirect('/links');
 });
 
@@ -36,9 +36,9 @@ router.get('/delete/:id', async (req, res) => {
 router.get('/edit/:id', async (req, res) => {
     const { id } = req.params;
     console.log(id);
-    
     const links = await db.query('SELECT * FROM links WHERE id = ?', [id]);
     res.render('links/edit', { links: links[0] });
+
 });
 
 router.post('/edit/:id', async (req, res) => {
