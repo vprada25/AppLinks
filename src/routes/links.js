@@ -13,7 +13,8 @@ router.post('/add', isLoggedIn, async (req, res) => {
     const newlink = {
         title,
         url,
-        description
+        description,
+        user_id : req.user.id
     };
 
     await db.query('INSERT INTO links set ?', [newlink]);
@@ -22,7 +23,7 @@ router.post('/add', isLoggedIn, async (req, res) => {
 });
 
 router.get('/', isLoggedIn, async (req, res) => {
-    const links = await db.query('SELECT * FROM links');
+    const links = await db.query('SELECT * FROM links where user_id = ?'[req.user.id]);
     res.render('links/list', { links });
 });
 
