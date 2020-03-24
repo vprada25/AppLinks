@@ -23,7 +23,7 @@ router.post('/add', isLoggedIn, async (req, res) => {
 });
 
 router.get('/', isLoggedIn, async (req, res) => {
-    const links = await db.query('SELECT * FROM links where user_id = ?'[req.user.id]);
+    const links = await db.query('SELECT * FROM links where user_id = ?',[req.user.id]);
     res.render('links/list', { links });
 });
 
