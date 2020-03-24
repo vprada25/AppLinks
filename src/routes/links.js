@@ -1,14 +1,13 @@
 const express = require('express');
-
 const router = express.Router();
-
 const db = require('../database');
+const { isLoggedIn } = require('../lib/auth');
 
-router.get('/add', (req, res) => {
+router.get('/add', isLoggedIn, (req, res) => {
     res.render('links/add');
 });
 
-router.post('/add', async (req, res) => {
+router.post('/add', isLoggedIn, async (req, res) => {
     const { title, url, description } = req.body;
 
     const newlink = {
@@ -18,23 +17,23 @@ router.post('/add', async (req, res) => {
     };
 
     await db.query('INSERT INTO links set ?', [newlink]);
-    req.flash('success','agregado correctamente');
+    req.flash('success', 'agregado correctamente');
     res.redirect('/links');
 });
 
-router.get('/', async (req, res) => {
+router.get('/', isLoggedIn, async (req, res) => {
     const links = await db.query('SELECT * FROM links');
     res.render('links/list', { links });
 });
 
-router.get('/delete/:id', async (req, res) => {
+router.get('/delete/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;
     await db.query('DELETE  FROM links WHERE  id= ?', [id]);
-    req.flash('success',' eliminado correctamente');
+    req.flash('success', ' eliminado correctamente');
     res.redirect('/links');
 });
 
-router.get('/edit/:id', async (req, res) => {
+router.get('/edit/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;
     console.log(id);
     const links = await db.query('SELECT * FROM links WHERE id = ?', [id]);
@@ -42,7 +41,7 @@ router.get('/edit/:id', async (req, res) => {
 
 });
 
-router.post('/edit/:id', async (req, res) => {
+router.post('/edit/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;
     const { title, description, url } = req.body;
 
@@ -53,7 +52,7 @@ router.post('/edit/:id', async (req, res) => {
     };
 
     await db.query('UPDATE links SET ? WHERE id = ? ', [newlink, id]);
-    req.flash('success','editado correctamente');
+    req.flash('success', 'editado correctamente');
     res.redirect('/links');
 });
 
