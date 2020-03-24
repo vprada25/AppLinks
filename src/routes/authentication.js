@@ -10,16 +10,30 @@ router.get('/signup', (req, res) => {
 
 
 
-router.post('/signup', passport.authenticate('local.signup', {
-    successRedirect: '/profile',
-    failureRedirect: '/signup',
-    failureFlash: true
-}));
+router.post('/signup', passport.authenticate('local.signup',
+    {
+        successRedirect: '/profile',
+        failureRedirect: '/signup',
+        failureFlash: true
+    }
+    ));
 
-router.get('/profile', (req, res) => {
-    res.send('recibido');
+router.get('/signin', (req, res) => {
+    res.render('auth/signin');
 });
 
+
+router.post('/signin', passport.authenticate('local.signin',
+    {
+        successRedirect: '/profile',
+        failureRedirect: '/signin',
+        failureFlash: true
+    }
+    ));
+
+router.get('/profile', (req, res) => {
+    res.render('profile');
+});
 
 
 /*router.post('/signup', (req, res) => {

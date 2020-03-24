@@ -1,8 +1,28 @@
 const passport = require('passport');
-
 const localstrategy = require('passport-local').Strategy;
 const db = require('../database');
 const helpers = require('./helpers');
+
+
+passport.use('local.signin', new localstrategy({
+    usernameField: 'username',
+    passwordField: 'password',
+    passReqToCallback: true
+}, async (req, username, password, done) => {
+    const rows = await db.query('SELECT * FROM users WHERE username = ?', [username]);
+    console.log(rows);
+    if (rows.length > 0) {
+        const user = rows[0];
+        const validPassword = await helpers.macthPassword(password, user.password);
+        if (validPassword) {
+            done(null, user, req.flash('success', 'Bienvenido ' + user));
+        } else {
+            done(null, false, req.flash('message', 'Contraseña incorrecta'));
+        }
+    } else {
+        return done(null, false, req.flash('message', 'El usuario no existe'));
+    }
+}));
 
 passport.use('local.signup', new localstrategy({
     usernameField: 'username',
@@ -22,6 +42,8 @@ passport.use('local.signup', new localstrategy({
     return done(null, newUser);
 
 }));
+
+
 
 passport.serializeUser((user, done) => {
     done(null, user.id);
